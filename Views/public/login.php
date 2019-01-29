@@ -1,27 +1,31 @@
+<?php 
+	if( isset($_POST["username"]) && isset($_POST["password"])){
+
+		if(!empty($_POST["password"]) && !empty($_POST["username"])){
+			$GDB = new UsersDB(__TABLE_NAME__);
+
+			if($GDB->connect()){
+				$user_record = $GDB->get_record_by_name_pass($_POST["username"], $_POST["password"]); // this is an array of arrays
+				if(isset($user_record) && !empty($user_record)){
+					$user_record = $user_record[0];
+					$_SESSION["user_id"] = $user_record["id"];
+					$_SESSION["is_admin"] = $user_record["isadmin"];
+				} else {
+					$error = "Either user name or password is wrong";
+				}
+			}
+		} else {
+			$error = "Either user name or password is wrong";
+		}
+	} 
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<title>Login</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->
-	<link rel="icon" type="image/png" href="views/public/images/icons/favicon.ico"/>
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="views/public/css/util1.css">
 	<link rel="stylesheet" type="text/css" href="views/public/css/main1.css">
@@ -32,7 +36,7 @@
 	<div class="limiter">
 		<div class="container-login100">
 			<div class="wrap-login100 p-t-0 p-b-0">
-				<form class="login100-form validate-form" method="post">
+				<form class="login100-form validate-form" method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
 					<span class="login100-form-title p-b-20">
 						Welcome
 					</span>
@@ -45,13 +49,17 @@
 						<span class="focus-input100" data-placeholder="Username"></span>
 					</div>
 
-					<div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
-						<input class="input100" type="password" name="pass">
+					<div class="wrap-input100 validate-input" data-validate="Enter password">
+						<input class="input100" type="password" name="password">
 						<span class="focus-input100" data-placeholder="Password"></span>
 					</div>
-
+					<div class="m-b-40">
+						<p class="error">
+							<?php if(isset($error)){echo "*".$error;}?>
+						</p>
+					</div>
 					<div class="container-login100-form-btn">
-						<button class="login100-form-btn">
+						<button class="login100-form-btn" name="submit" type="submit">
 							Login
 						</button>
 					</div>
@@ -72,26 +80,7 @@
 			</div>
 		</div>
 	</div>
-
-
 	<div id="dropDownSelect1"></div>
-
-<!--===============================================================================================-->
-	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/animsition/js/animsition.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/bootstrap/js/popper.js"></script>
-	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/select2/select2.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/daterangepicker/moment.min.js"></script>
-	<script src="vendor/daterangepicker/daterangepicker.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/countdowntime/countdowntime.js"></script>
-<!--===============================================================================================-->
-	<script src="views/public/js/main.js"></script>
 
 </body>
 </html>

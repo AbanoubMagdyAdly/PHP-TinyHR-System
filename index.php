@@ -10,12 +10,12 @@ define("_ALLOW_ACCESS", 1);
 session_start();
 session_regenerate_id();
 
-
 //********************************************//
 //Routing
-if (isset($_SESSION["user_id"]) && $_SESSION["is_admin"] === true) {
+if (isset($_SESSION["user_id"]) && $_SESSION["is_admin"] == true) {
     //admin views should be required here
-} elseif (isset($_SESSION["user_id"]) && $_SESSION["is_admin"] === false) {
+} elseif (isset($_SESSION["user_id"]) && $_SESSION["is_admin"] == 0) {
+    echo "logged in successfully";
     //members views should be required here
 } else {
     require_once("views/public/login.php");
