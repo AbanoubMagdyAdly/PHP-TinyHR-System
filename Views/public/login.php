@@ -10,6 +10,7 @@
 					$user_record = $user_record[0];
 					$_SESSION["user_id"] = $user_record["id"];
 					$_SESSION["is_admin"] = $user_record["isadmin"];
+					header("Refresh:0");
 				} else {
 					$error = "Either user name or password is wrong";
 				}
@@ -71,7 +72,7 @@
 								Don’t have an account?
 							</span>
 
-							<a href="views/public/signup.php" class="txt2">
+							<a href="?signup=1" class="txt2">
 								Sign up
 							</a>
 						</li>

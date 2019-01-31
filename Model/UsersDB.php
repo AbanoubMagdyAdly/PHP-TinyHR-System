@@ -82,6 +82,19 @@ Class UsersDB {
         return $this->get_results($sql);
     }
 
+    public function is_exist($username)
+    {
+        $table =$this->_table;
+        $sql = "select * from $table where username like '%".$username."%'";
+        return $this->get_results($sql);
+    }
+
+    public function update_user_date($username,$password,$email,$job)
+    {
+        $sql="INSERT INTO `users` (`username`, `id`, `password`, `job`, `hasphoto`, `hascv`, `isadmin`) VALUES ($username, null, $password, $job, '1', '1', '0')";
+        
+    }
+
 /*     public function get_results_parametrized($sql, $value){
         if(__DEBUG_MODE__ == 1){
             echo $sql."<br></br>";
