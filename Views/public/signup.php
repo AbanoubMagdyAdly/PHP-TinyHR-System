@@ -1,18 +1,23 @@
 <?php 
 $errors = array();
-if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]) && isset($_FILES["cv"]) && isset($_FILES["Photo"])) {
+if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]) && isset($_FILES["cv"]) && isset($_FILES["Photo"]))
+	if (!empty($_POST["uname"]) && !empty($_POST["password"]) && !empty($_POST["email"]) && !empty($_FILES["cv"]) && !empty($_FILES["Photo"])) {
 	$db = new UsersDB("users");
 	$db->connect();
 	if ($db->is_exist($_POST["uname"])) {
 		echo "exist";
-	} else
-		echo "welcome";
-	$upload = new Upload($_POST["uname"]);
-	if ($upload->Check_photo() && $upload->Check_cv()) {
-		$upload->Upload_photo();
-		$upload->Upload_cv();
 	} else {
-		var_dump($upload->errors);
+		echo "welcome";
+		$upload = new Upload($_POST["uname"]);
+		if ($upload->Check_photo() && $upload->Check_cv()) {
+			$upload->Upload_photo();
+			$upload->Upload_cv();
+			$password = hash("sha256", $_POST["password"]);
+			$db->connect();
+			$db->insert_user_date($_POST["uname"],$password,$_POST["email"],$_POST["job"]);
+		} else {
+			var_dump($upload->errors);
+		}
 	}
 } else {
 	$errors[] = "Please complete the form !!";
@@ -60,6 +65,12 @@ if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]
 				<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
 					<span class="label-input100">Email</span>
 					<input class="input100" type="text" name="email" placeholder="Enter your email addess">
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 validate-input" data-validate="Job is required">
+					<span class="label-input100">User job</span>
+					<input class="input100" type="text" name="job" placeholder="Enter your job">
 					<span class="focus-input100"></span>
 				</div>
 

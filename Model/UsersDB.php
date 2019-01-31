@@ -89,10 +89,13 @@ Class UsersDB {
         return $this->get_results($sql);
     }
 
-    public function update_user_date($username,$password,$email,$job)
+    public function insert_user_date($username,$password,$email,$job)
     {
-        $sql="INSERT INTO `users` (`username`, `id`, `password`, `job`, `hasphoto`, `hascv`, `isadmin`) VALUES ($username, null, $password, $job, '1', '1', '0')";
-        
+        $table =$this->_table;
+        $sql="insert into $table (username, password,email, job, hasphoto, hascv, isadmin) VALUES ('$username', '$password','$email','$job', '1', '1', '0');";
+        mysqli_query($this->_db_handler, $sql);
+        echo mysqli_error($this->_db_handler);
+        $this->disconnect();
     }
 
 /*     public function get_results_parametrized($sql, $value){
