@@ -42,6 +42,9 @@ body, html {
 	font-family: Poppins-Regular, sans-serif;
 }
 
+.error{
+  color: red;
+}
 /*---------------------------------------------*/
 a {
 	font-family: Poppins-Regular;

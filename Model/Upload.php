@@ -9,16 +9,17 @@ class Upload
     }
     public function Check_photo()
     {
-        $target_dir = "Files\Photos\\";
+       
+        $target_dir = "\wamp64\www\\tinyhr\Files\Photos\\";
         $target_file = $target_dir . basename($_FILES["Photo"]["name"]);
         $uploadOk = 1;
-        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-        if ($_FILES["Photo"]["size"] > 1000000) {
-            $this->errors[] = "Sorry, your file is too large.";
+        $mime =getimagesize( $_FILES['Photo']['tmp_name'] );
+        if ($_FILES["Photo"]["size"] > 1024*1024) {
+            $this->errors["photo"] = "Sorry, your photo is too large.";
             $uploadOk = 0;
         }
-        if ($imageFileType != "jpg" && $imageFileType != "jpeg") {
-            $this->errors[] = "Sorry, only JPG & JPEG files are allowed.";
+        if ($mime['mime'] != "image/jpeg" && $mime['mime'] != "image/jpg") {
+            $this->errors["photo"] = "Sorry, only JPG & JPEG files are allowed.";
             $uploadOk = 0;
         }
 
@@ -26,16 +27,16 @@ class Upload
     }
     public function Check_cv()
     {
-        $target_dir = "Files\CVs\\";
+        $target_dir = "\wamp64\www\\tinyhr\Files\CVs\\";
         $target_file = $target_dir . basename($_FILES["cv"]["name"]);
         $uploadOk = 1;
-        $cvFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-        if ($_FILES["cv"]["size"] > 1000000) {
-            $this->errors[] = "Sorry, your file is too large.";
+        $mime = mime_content_type($_FILES["cv"]["tmp_name"]);
+        if ($_FILES["cv"]["size"] >  1024*1024) {
+            $this->errors["cv"] = "Sorry, your cv is too large.";
             $uploadOk = 0;
         }
-        if ($cvFileType != "pdf") {
-            $this->errors[] = "Sorry, only pdf files are allowed.";
+        if ($mime != "application/pdf") {
+            $this->errors["cv"] = "Sorry, only pdf files are allowed.";
             $uploadOk = 0;
         }
 // Check if $uploadOk is set to 0 by an error
@@ -45,7 +46,7 @@ class Upload
 
     public function Upload_photo()
     {
-        $target_dir = "Files\Photos\\";
+        $target_dir = "\wamp64\www\\tinyhr\Files\Photos\\";
         $extension = explode(".", $_FILES["Photo"]["name"])[1];
         if (move_uploaded_file($_FILES["Photo"]["tmp_name"], "$target_dir{$this->username}.jpg")) {
             return 1;

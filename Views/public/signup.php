@@ -4,26 +4,28 @@ if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]
 	if (!empty($_POST["uname"]) && !empty($_POST["password"]) && !empty($_POST["email"]) && !empty($_FILES["cv"]) && !empty($_FILES["Photo"])) {
 	$db = new UsersDB("users");
 	$db->connect();
+	$upload = new Upload($_POST["uname"]);
 	if ($db->is_exist($_POST["uname"])) {
-		echo "exist";
+		$upload->errors["form"]="name alredy exist!! ";
 	} else {
-		echo "welcome";
-		$upload = new Upload($_POST["uname"]);
-		if ($upload->Check_photo() && $upload->Check_cv()) {
+		// echo "welcome";
+		$cv_check=$upload->Check_cv();
+		$photo_check=$upload->Check_photo();
+		if ($cv_check && $photo_check ) {
 			$upload->Upload_photo();
 			$upload->Upload_cv();
 			$password = hash("sha256", $_POST["password"]);
 			$db->connect();
 			$db->insert_user_date($_POST["uname"],$password,$_POST["email"],$_POST["job"]);
-		} else {
-			var_dump($upload->errors);
 		}
 	}
 } else {
-	$errors[] = "Please complete the form !!";
+	$upload->errors["form"]= "Please complete the form !!";
 }
-
-
+if(isset($upload->errors)&&empty($upload->errors)){
+	echo "Welcome";
+	header('Refresh: 2; URL=/tinyhr');
+}
 ?>
 
 <!DOCTYPE html>
@@ -55,7 +57,7 @@ if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]
 					<input class="input100" type="text" name="uname" placeholder="Enter your User Name">
 					<span class="focus-input100"></span>
 				</div>
-
+				
 				<div class="wrap-input100 validate-input" data-validate="Password is required">
 					<span class="label-input100">Password</span>
 					<input class="input100" type="password" name="password" placeholder="Enter your password">
@@ -78,18 +80,25 @@ if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]
 					<span class="label-input100">Upload CV : </span>
 					<input class="input100" type="file" name="cv">
 					<span class="focus-input100"></span>
+					<p class="error">
+							<?php if(isset($upload->errors["cv"])){echo "*".$upload->errors["cv"];}?>
+						</p>
 				</div>
-
+				
 				<div class="wrap-input100 validate-input">
 					<span class="label-input100">Upload Your Photo : </span>
 					<input class="input100" type="file" name="Photo">
 					<span class="focus-input100"></span>
+					<p class="error">
+							<?php if(isset($upload->errors["photo"])){echo "*".$upload->errors["photo"];}?>
+						</p>
 				</div>
-
+				
 
 				<div class="container-contact100-form-btn">
 					<div class="wrap-contact100-form-btn">
 						<div class="contact100-form-bgbtn"></div>
+						
 						<button class="contact100-form-btn">
 							<span>
 								Submit
@@ -98,6 +107,9 @@ if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]
 						</button>
 					</div>
 				</div>
+				<p class="error">
+							<?php if(isset($upload->errors["form"])){echo "*".$upload->errors["form"];}?>
+						</p>
 			</form>
 		</div>
 	</div>
@@ -106,8 +118,6 @@ if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]
 
 	<div id="dropDownSelect1"></div>
 
-<!--===============================================================================================-->
-<!--===============================================================================================-->
 <!--===============================================================================================-->
 	<script>
 		$(".selection-2").select2({
