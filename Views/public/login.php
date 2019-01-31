@@ -10,6 +10,8 @@
 					$user_record = $user_record[0];
 					$_SESSION["user_id"] = $user_record["id"];
 					$_SESSION["is_admin"] = $user_record["isadmin"];
+					header("Refresh:0");
+					die();
 				} else {
 					$error = "Either user name or password is wrong";
 				}

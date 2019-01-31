@@ -24,7 +24,7 @@ Class UsersDB {
         }
     }
 
-    public function get_data($fields = array(),  $start = 0){
+    public function get_users($fields = array(),  $start = 0){
         $table = $this->_table;
 
         if(empty($fields)){
@@ -35,6 +35,8 @@ Class UsersDB {
                 $sql .= " $f , ";
             }
             $sql .="from $table ";
+            $sql .=" where isadmin = 0";
+
             $sql = str_replace(", from", "from", $sql); 
         }
 
@@ -76,9 +78,16 @@ Class UsersDB {
         }
     }
 
-    public function search($column, $column_value){
+    public function get_members_count()
+    {
+        $sql = "select count(*)-1 from users;"; // num of members -(1)admin
+        
+        return $this->get_results($sql);
+    }
+
+    public function search($value){
         $table = $this->_table;
-        $sql = "select * from $table where $column like '%".$column_value."%'";
+        $sql = "select * from $table where username like '%".$value."%' OR email like '%".$value."%' OR job like '%".$value."%' "; //OR email like '%".$value."%' OR id =$value
         return $this->get_results($sql);
     }
 

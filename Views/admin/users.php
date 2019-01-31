@@ -1,3 +1,22 @@
+<?php
+    $DB = new UsersDB(__TABLE_NAME__);
+
+    $current_page = isset($_GET["page"]) && is_numeric($_GET["page"])? $_GET["page"]: 0;
+
+    if($DB->connect()){
+        $users_records = $DB->get_users(["username","id","email","job","hasphoto","hascv"], $current_page*__RECORDS_PER_PAGE__); // this is an array of arrays
+        $members_count = (array_values(($DB->get_members_count())[0]))[0];
+    }
+
+    if(isset($_GET["search"])){
+        $users_records = $DB->search($_GET["search"]);
+    }
+    
+    $pg = new Pagination($current_page, $members_count);
+    $pg->handle_url_upper_limit();    
+    $pg->handle_url_lower_limit();
+?>
+
 <!DOCTYPE html>
 <html lang="en" >
 
@@ -8,8 +27,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
 
     <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" />
-    <link href="css/main.css" rel="stylesheet" />
-      <link rel="stylesheet" href="css/style.css">
+    <link href="views/admin/css/main.css" rel="stylesheet" />
+      <link rel="stylesheet" href="views/admin/css/style.css">
 
 
 </head>
@@ -19,7 +38,7 @@
     <form>
       <div class="inner-form">
         <div class="input-field second-wrap">
-          <input id="search" type="text" placeholder="Enter Keywords?" />
+          <input id="search" type="text" placeholder="Enter Keywords?" name="search" />
         </div>
         <div class="input-field third-wrap">
           <button class="btn-search" type="button">
@@ -35,47 +54,39 @@
   <div class="table-users">
    <div class="header">Users</div>
 
-   <table cellspacing="0">
-      <tr>
-         <th>Picture</th>
-         <th>Name</th>
-         <th>Email</th>
-         <th>Phone</th>
-         <th width="230">Comments</th>
-      </tr>
 
-      <tr>
-         <td><img src="http://lorempixel.com/100/100/people/1" alt="" /></td>
-         <td>Jane Doe</td>
-         <td>jane.doe@foo.com</td>
-         <td>01 800 2000</td>
-         <td>Lorem ipsum dolor sit amet, consectetur adipisicing elit. </td>
-      </tr>
+    <?php if(isset($users_records) && !empty($users_records)){
+    ?>
+        <table cellspacing="0">
+            <tr>
+                <th>Picture</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Job</th>
+                <th width="230">Comments</th>
+            </tr>
 
-      <tr>
-         <td><img src="http://lorempixel.com/100/100/sports/2" alt="" /></td>
-         <td>John Doe</td>
-         <td>john.doe@foo.com</td>
-         <td>01 800 2000</td>
-         <td>Blanditiis, aliquid numquam iure voluptatibus ut maiores explicabo ducimus neque, nesciunt rerum perferendis, inventore.</td>
-      </tr>
+        <?php
+            foreach($users_records as $user_record){
+                $image_src = $user_record["hasphoto"] == 1 ? "Files/Photos/".$user_record["username"]: "Assets/default_avatar";
+                echo "<tr>";
+                echo "<td> <img src=$image_src" . ".jpg >" . "</td>";
+                echo "<td>". $user_record["username"] . "</td>"; 
+                echo "<td>" . $user_record["email"] . "</td>";
+                echo "<td>" . $user_record["job"] . "</td>";
+                echo "<td><a href=".$_SERVER['PHP_SELF']."?id=".$user_record['id'].">view more</a></td>";
+                echo "</tr>";  
+            }
 
-      <tr>
-         <td><img src="http://lorempixel.com/100/100/people/9" alt="" /></td>
-         <td>Jane Smith</td>
-         <td>jane.smith@foo.com</td>
-         <td>01 800 2000</td>
-         <td> Culpa praesentium unde pariatur fugit eos recusandae voluptas.</td>
-      </tr>
+            echo "<a href=".$_SERVER['PHP_SELF']."?page=".$pg->nextPage()."> next </a>";
+            echo "<a href=".$_SERVER['PHP_SELF']."?page=".$pg->prevPage()."> previous </a>";     
+        ?>
+        </table>
 
-      <tr>
-         <td><img src="http://lorempixel.com/100/100/people/3" alt="" /></td>
-         <td>John Smith</td>
-         <td>john.smith@foo.com</td>
-         <td>01 800 2000</td>
-         <td>Aut voluptatum accusantium, eveniet, sapiente quaerat adipisci consequatur maxime temporibus quas, dolorem impedit.</td>
-      </tr>
-   </table>
+    <?php } else {
+                echo 'no users are found found';
+          }        
+    ?>
 </div>
 
 
