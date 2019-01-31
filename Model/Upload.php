@@ -9,7 +9,7 @@ class Upload
     }
     public function Check_photo()
     {
-        $target_dir = "\wamp64\www\\tinyhr\Files\Photos\\";
+        $target_dir = "Files\Photos\\";
         $target_file = $target_dir . basename($_FILES["Photo"]["name"]);
         $uploadOk = 1;
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
@@ -26,7 +26,7 @@ class Upload
     }
     public function Check_cv()
     {
-        $target_dir = "\wamp64\www\\tinyhr\Files\CVs\\";
+        $target_dir = "Files\CVs\\";
         $target_file = $target_dir . basename($_FILES["cv"]["name"]);
         $uploadOk = 1;
         $cvFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
@@ -45,7 +45,7 @@ class Upload
 
     public function Upload_photo()
     {
-        $target_dir = "\wamp64\www\\tinyhr\Files\Photos\\";
+        $target_dir = "Files\Photos\\";
         $extension = explode(".", $_FILES["Photo"]["name"])[1];
         if (move_uploaded_file($_FILES["Photo"]["tmp_name"], "$target_dir{$this->username}.jpg")) {
             return 1;
