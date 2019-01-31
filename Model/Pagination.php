@@ -15,18 +15,18 @@ class Pagination{
     public function nextPage(){
         $this->current_page+=1;
         
-        $this->handle_url_upper_limit();    
-    
-        return  $this->current_page > $this->upper_limit ? $this->upper_limit : $this->current_page;
+        $this->current_page = $this->current_page > $this->upper_limit ? $this->upper_limit : $this->current_page;
+
+        return $this->current_page;
     }
 
     public function prevPage(){
         
         $this->current_page-=1;
     
-        $this->handle_url_lower_limit();
+        $this->current_page = $this->current_page < $this->lower_limit ? $this->lower_limit :  $this->current_page;
     
-        return  $this->current_page < $this->lower_limit ? $this->lower_limit :  $this->current_page-1;
+        return $this->current_page;
     }
 
     public function handle_url_upper_limit(){
