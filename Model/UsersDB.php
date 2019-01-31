@@ -91,6 +91,22 @@ Class UsersDB {
         return $this->get_results($sql);
     }
 
+    public function is_exist($username)
+    {
+        $table =$this->_table;
+        $sql = "select * from $table where username like '%".$username."%'";
+        return $this->get_results($sql);
+    }
+
+    public function insert_user_date($username,$password,$email,$job)
+    {
+        $table =$this->_table;
+        $sql="insert into $table (username, password,email, job, hasphoto, hascv, isadmin) VALUES ('$username', '$password','$email','$job', '1', '1', '0');";
+        mysqli_query($this->_db_handler, $sql);
+        echo mysqli_error($this->_db_handler);
+        $this->disconnect();
+    }
+
 /*     public function get_results_parametrized($sql, $value){
         if(__DEBUG_MODE__ == 1){
             echo $sql."<br></br>";

@@ -73,7 +73,7 @@
 								Don’t have an account?
 							</span>
 
-							<a href="views/public/signup.php" class="txt2">
+							<a href="?signup=1" class="txt2">
 								Sign up
 							</a>
 						</li>

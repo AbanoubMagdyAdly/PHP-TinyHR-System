@@ -1,3 +1,33 @@
+<?php 
+$errors = array();
+if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]) && isset($_FILES["cv"]) && isset($_FILES["Photo"]))
+	if (!empty($_POST["uname"]) && !empty($_POST["password"]) && !empty($_POST["email"]) && !empty($_FILES["cv"]) && !empty($_FILES["Photo"])) {
+	$db = new UsersDB("users");
+	$db->connect();
+	$upload = new Upload($_POST["uname"]);
+	if ($db->is_exist($_POST["uname"])) {
+		$upload->errors["form"]="name alredy exist!! ";
+	} else {
+		// echo "welcome";
+		$cv_check=$upload->Check_cv();
+		$photo_check=$upload->Check_photo();
+		if ($cv_check && $photo_check ) {
+			$upload->Upload_photo();
+			$upload->Upload_cv();
+			$password = hash("sha256", $_POST["password"]);
+			$db->connect();
+			$db->insert_user_date($_POST["uname"],$password,$_POST["email"],$_POST["job"]);
+		}
+	}
+} else {
+	$upload->errors["form"]= "Please complete the form !!";
+}
+if(isset($upload->errors)&&empty($upload->errors)){
+	echo "Welcome";
+	header('Refresh: 2; URL=/tinyhr');
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,24 +35,11 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->
-	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
+	<link rel="icon" type="image/png" href="views/public/images/icons/favicon.ico"/>
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="css/util.css">
-	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<link rel="stylesheet" type="text/css" href="views/public/css/util.css">
+	<link rel="stylesheet" type="text/css" href="views/public/css/main.css">
 <!--===============================================================================================-->
 </head>
 <body>
@@ -40,7 +57,7 @@
 					<input class="input100" type="text" name="uname" placeholder="Enter your User Name">
 					<span class="focus-input100"></span>
 				</div>
-
+				
 				<div class="wrap-input100 validate-input" data-validate="Password is required">
 					<span class="label-input100">Password</span>
 					<input class="input100" type="password" name="password" placeholder="Enter your password">
@@ -53,22 +70,35 @@
 					<span class="focus-input100"></span>
 				</div>
 
+				<div class="wrap-input100 validate-input" data-validate="Job is required">
+					<span class="label-input100">User job</span>
+					<input class="input100" type="text" name="job" placeholder="Enter your job">
+					<span class="focus-input100"></span>
+				</div>
+
 				<div class="wrap-input100 validate-input">
 					<span class="label-input100">Upload CV : </span>
 					<input class="input100" type="file" name="cv">
 					<span class="focus-input100"></span>
+					<p class="error">
+							<?php if(isset($upload->errors["cv"])){echo "*".$upload->errors["cv"];}?>
+						</p>
 				</div>
-
+				
 				<div class="wrap-input100 validate-input">
 					<span class="label-input100">Upload Your Photo : </span>
 					<input class="input100" type="file" name="Photo">
 					<span class="focus-input100"></span>
+					<p class="error">
+							<?php if(isset($upload->errors["photo"])){echo "*".$upload->errors["photo"];}?>
+						</p>
 				</div>
-
+				
 
 				<div class="container-contact100-form-btn">
 					<div class="wrap-contact100-form-btn">
 						<div class="contact100-form-bgbtn"></div>
+						
 						<button class="contact100-form-btn">
 							<span>
 								Submit
@@ -77,6 +107,9 @@
 						</button>
 					</div>
 				</div>
+				<p class="error">
+							<?php if(isset($upload->errors["form"])){echo "*".$upload->errors["form"];}?>
+						</p>
 			</form>
 		</div>
 	</div>
@@ -86,14 +119,6 @@
 	<div id="dropDownSelect1"></div>
 
 <!--===============================================================================================-->
-	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/animsition/js/animsition.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/bootstrap/js/popper.js"></script>
-	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/select2/select2.min.js"></script>
 	<script>
 		$(".selection-2").select2({
 			minimumResultsForSearch: 20,
@@ -101,12 +126,7 @@
 		});
 	</script>
 <!--===============================================================================================-->
-	<script src="vendor/daterangepicker/moment.min.js"></script>
-	<script src="vendor/daterangepicker/daterangepicker.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/countdowntime/countdowntime.js"></script>
-<!--===============================================================================================-->
-	<script src="js/main.js"></script>
+	<script src="views/public/js/main.js"></script>
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
 <script>
