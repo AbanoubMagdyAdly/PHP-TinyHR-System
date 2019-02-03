@@ -86,7 +86,7 @@ Class UsersDB {
 
     public function search($value){
         $table = $this->_table;
-        $sql = "select * from $table where username like '%".$value."%' OR email like '%".$value."%' OR job like '%".$value."%' "; //OR email like '%".$value."%' OR id =$value
+        $sql = "select * from $table where isadmin =0 and username like '%".$value."%' OR email like '%".$value."%' OR job like '%".$value."%'"; //OR email like '%".$value."%' OR id =$value
         return $this->get_results($sql);
     }
 

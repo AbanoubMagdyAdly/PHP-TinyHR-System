@@ -1,20 +1,20 @@
 <?php
-    $DB = new UsersDB(__TABLE_NAME__);
+$DB = new UsersDB(__TABLE_NAME__);
 
-    $current_page = isset($_GET["page"]) && is_numeric($_GET["page"])? $_GET["page"]: 0;
+$current_page = isset($_GET["page"]) && is_numeric($_GET["page"]) ? $_GET["page"] : 0;
 
-    if($DB->connect()){
-        $users_records = $DB->get_users(["username","id","email","job","hasphoto","hascv"], $current_page*__RECORDS_PER_PAGE__); // this is an array of arrays
-        $members_count = (array_values(($DB->get_members_count())[0]))[0];
-      }
+if ($DB->connect()) {
+    $users_records = $DB->get_users(["username", "id", "email", "job", "hasphoto", "hascv"], $current_page * __RECORDS_PER_PAGE__); // this is an array of arrays
+    $members_count = (array_values(($DB->get_members_count())[0]))[0];
+}
 
-    if(isset($_GET["search"])){
-        $users_records = $DB->search($_GET["search"]);
-    }
-    
-    $pg = new Pagination($current_page, $members_count);
-    $pg->handle_url_upper_limit();    
-    $pg->handle_url_lower_limit();
+if (isset($_GET["search"])) {
+    $users_records = $DB->search($_GET["search"]);
+}
+
+$pg = new Pagination($current_page, $members_count);
+$pg->handle_url_upper_limit();
+$pg->handle_url_lower_limit();
 ?>
 
 <!DOCTYPE html>
@@ -34,6 +34,7 @@
 </head>
 
 <body>
+    <a href="?logout"> <button>logout</button> </a>
     <div class="s003">
         <form>
             <div class="inner-form">
@@ -58,8 +59,8 @@
         <div class="header">Users</div>
 
 
-        <?php if(isset($users_records) && !empty($users_records)){
-    ?>
+        <?php if (isset($users_records) && !empty($users_records)) {
+        ?>
         <table cellspacing="0">
             <tr>
                 <th>Picture</th>
@@ -70,25 +71,31 @@
             </tr>
 
             <?php
-            foreach($users_records as $user_record){
-                $image_src = $user_record["hasphoto"] == 1 ? "Files/Photos/".$user_record["username"]: "Assets/default_avatar";
+            foreach ($users_records as $user_record) {
+                $image_src = $user_record["hasphoto"] == 1 ? "Files/Photos/" . $user_record["username"] : "Assets/default_avatar";
                 echo "<tr>";
                 echo "<td> <img src=$image_src" . ".jpg >" . "</td>";
-                echo "<td>". $user_record["username"] . "</td>"; 
+                echo "<td>" . $user_record["username"] . "</td>";
                 echo "<td>" . $user_record["email"] . "</td>";
                 echo "<td>" . $user_record["job"] . "</td>";
-                echo "<td><a href=".$_SERVER['PHP_SELF']."?id=".$user_record['id'].">view more</a></td>";
-                echo "</tr>";  
+                echo "<td><a href=" . $_SERVER['PHP_SELF'] . "?id=" . $user_record['id'] . ">view more</a></td>";
+                echo "</tr>";
             }
 
-            echo "<a href=".$_SERVER['PHP_SELF']."?page=".$pg->nextPage()."> next </a>";
-            echo "<a href=".$_SERVER['PHP_SELF']."?page=".$pg->prevPage()."> previous </a>";     
-        ?>
+            if (isset($_GET["search"])) {
+                echo "<a href=" . $_SERVER['PHP_SELF'] . "> show all </a>";
+            } else {
+                echo "<a href=" . $_SERVER['PHP_SELF'] . "?page=" . $pg->nextPage() . "> next </a>";
+                echo "<a href=" . $_SERVER['PHP_SELF'] . "?page=" . $pg->prevPage() . "> previous </a>";
+            }
+
+            ?>
         </table>
 
-        <?php } else {
-                echo 'no users are found found';
-          }        
+        <?php 
+    } else {
+        echo 'no users are found found';
+    }
     ?>
     </div>
 
