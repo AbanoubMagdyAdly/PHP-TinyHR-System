@@ -79,8 +79,13 @@
                 echo "</tr>";  
             }
 
-            echo "<a href=".$_SERVER['PHP_SELF']."?page=".$pg->nextPage()."> next </a>";
-            echo "<a href=".$_SERVER['PHP_SELF']."?page=".$pg->prevPage()."> previous </a>";     
+            if(isset($_GET["search"])){
+              echo "<a href=".$_SERVER['PHP_SELF']."> show all </a>";
+            } else{
+              echo "<a href=".$_SERVER['PHP_SELF']."?page=".$pg->nextPage()."> next </a>";
+              echo "<a href=".$_SERVER['PHP_SELF']."?page=".$pg->prevPage()."> previous </a>";     
+            }
+        
         ?>
         </table>
 
