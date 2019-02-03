@@ -81,7 +81,6 @@ Class UsersDB {
     public function get_members_count()
     {
         $sql = "select count(*)-1 from users;"; // num of members -(1)admin
-        
         return $this->get_results($sql);
     }
 
@@ -133,5 +132,3 @@ Class UsersDB {
 }
 
 ?>
-
-
