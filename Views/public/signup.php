@@ -1,7 +1,7 @@
 <?php 
 $errors = array();
-if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]) && isset($_FILES["cv"]) && isset($_FILES["Photo"]))
-	if (!empty($_POST["uname"]) && !empty($_POST["password"]) && !empty($_POST["email"]) && !empty($_FILES["cv"]) && !empty($_FILES["Photo"])) {
+if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]) && isset($_FILES["cv"]["name"]) && isset($_FILES["Photo"]["name"]))
+	if (!empty($_POST["uname"]) && !empty($_POST["password"]) && !empty($_POST["email"]) && !empty($_FILES["cv"]["name"]) && !empty($_FILES["Photo"]["name"])) {
 	$db = new UsersDB("users");
 	$db->connect();
 	$upload = new Upload($_POST["uname"]);
@@ -9,9 +9,11 @@ if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]
 		$upload->errors["form"]="name alredy exist!! ";
 	} else {
 		// echo "welcome";
+		$email_check = $upload->Check_email();
+		$password_check = $upload->Check_password();
 		$cv_check=$upload->Check_cv();
-		$photo_check=$upload->Check_photo();
-		if ($cv_check && $photo_check ) {
+		$photo_check=$upload->Check_photo();		
+		if ($cv_check && $photo_check && $email_check && $password_check){ 
 			$upload->Upload_photo();
 			$upload->Upload_cv();
 			$password = hash("sha256", $_POST["password"]);
@@ -26,6 +28,12 @@ if(isset($upload->errors)&&empty($upload->errors)){
 	echo "Welcome";
 	header('Refresh: 2; URL=/tinyhr');
 }
+var_dump($_FILES["cv"]);
+
+$password = isset($_POST['password']) ? $_POST['password'] : "";
+$uname    = isset($_POST['uname'])    ? $_POST['uname']    : "";
+$email    = isset($_POST['email'])    ? $_POST['email']    : "";
+$job 	  = isset($_POST['job'])      ? $_POST['job']      : "";
 ?>
 
 <!DOCTYPE html>
@@ -54,25 +62,31 @@ if(isset($upload->errors)&&empty($upload->errors)){
 
 				<div class="wrap-input100 validate-input" data-validate="UserName is required">
 					<span class="label-input100">User Name</span>
-					<input class="input100" type="text" name="uname" placeholder="Enter your User Name">
+					<input class="input100" type="text" name="uname" placeholder="Enter your User Name" value="<?php echo $uname ?>" >
 					<span class="focus-input100"></span>
 				</div>
 				
 				<div class="wrap-input100 validate-input" data-validate="Password is required">
 					<span class="label-input100">Password</span>
-					<input class="input100" type="password" name="password" placeholder="Enter your password">
+					<input class="input100" type="password" name="password" placeholder="Enter your password" value="<?php echo $password ?>">
 					<span class="focus-input100"></span>
+					<p class="error mt-0">
+						<?php if(isset($upload->errors["password"])){echo "*".$upload->errors["password"];}?>
+					</p>
 				</div>
 
 				<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
 					<span class="label-input100">Email</span>
-					<input class="input100" type="text" name="email" placeholder="Enter your email addess">
+					<input class="input100" type="text" name="email" placeholder="Enter your email addess"  value="<?php echo $email ?>">
 					<span class="focus-input100"></span>
+					<p class="error mt-0">
+						<?php if(isset($upload->errors["email"])){echo "*".$upload->errors["email"];}?>
+					</p>
 				</div>
 
 				<div class="wrap-input100 validate-input" data-validate="Job is required">
 					<span class="label-input100">User job</span>
-					<input class="input100" type="text" name="job" placeholder="Enter your job">
+					<input class="input100" type="text" name="job" placeholder="Enter your job" value="<?php echo $job ?>">
 					<span class="focus-input100"></span>
 				</div>
 

@@ -22,13 +22,8 @@ if (isset($_SESSION["user_id"])) {
         } else {
             require_once("views/admin/users.php");
         }
-        // setcookie("user_id",'$_SESSION["user_id"]',time()+31556926 ,'/');
-        // setcookie("is_admin",'$_SESSION["is_admin"]',time()+31556926 ,'/');
     } elseif ($_SESSION["is_admin"] == 0 || isset($_COOKIE["user_id"]) && $_COOKIE["is_admin"] == 0) {
         require_once("views/member/view_my_profile.php");
-        //members views should be required here
-        // setcookie("user_id",'$_SESSION["user_id"]',time()+31556926 ,'/');
-        // setcookie("is_admin",'$_SESSION["is_admin"]',time()+31556926 ,'/');
     }
 } elseif (isset($_GET["signup"])) {
     require_once("views/public/signup.php");

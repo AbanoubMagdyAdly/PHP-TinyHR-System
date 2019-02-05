@@ -7,6 +7,26 @@ class Upload
     {
         $this->username = $username;
     }
+
+    public function Check_email(){
+        $uploadOk = 1;
+        if(!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)){
+            $this->errors["email"] = "please use a valid email";
+            $uploadOk = 0;
+        }
+        return $uploadOk;
+    }
+   
+    public function Check_password()
+    {
+        $uploadOk = 1;
+        if(strlen($_POST["password"]) < 8 || strlen($_POST["password"]>16)){
+            $this->errors["password"] = "password must be between 8 and 16 characters";
+            $uploadOk = 0;
+        }
+        return $uploadOk;
+    }   
+
     public function Check_photo()
     {
        
