@@ -47,7 +47,7 @@ $res = $db->get_record_by_id($_SESSION["user_id"]);
                         <div class="media-body">
                             <div class="personal_text">
                                 <h6>Hello Everybody, i am</h6>
-                                <h3><?php echo $res[0]["username"] ?></h3>
+                                <h3><?php echo $res[0]["fullname"] ?></h3>
                                 <h4><?php echo $res[0]["job"] ?></h4>
                                 <ul class="list basic_info">
                                     <li><a href="#"><i class="lnr lnr-envelope"></i><?php echo $res[0]["email"] ?></a>

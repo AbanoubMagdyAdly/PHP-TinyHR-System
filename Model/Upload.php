@@ -29,12 +29,12 @@ class Upload
 
     public function Check_photo()
     {
-       
+
         $target_dir = "Files\Photos\\";
         $target_file = $target_dir . basename($_FILES["Photo"]["name"]);
         $uploadOk = 1;
-        $mime =getimagesize( $_FILES['Photo']['tmp_name'] );
-        if ($_FILES["Photo"]["size"] > 1024*1024) {
+        $mime = getimagesize($_FILES['Photo']['tmp_name']);
+        if ($_FILES["Photo"]["size"] > 1024 * 1024) {
             $this->errors["photo"] = "Sorry, your photo is too large.";
             $uploadOk = 0;
         }
@@ -51,7 +51,7 @@ class Upload
         $target_file = $target_dir . basename($_FILES["cv"]["name"]);
         $uploadOk = 1;
         $mime = mime_content_type($_FILES["cv"]["tmp_name"]);
-        if ($_FILES["cv"]["size"] >  1024*1024) {
+        if ($_FILES["cv"]["size"] > 1024 * 1024) {
             $this->errors["cv"] = "Sorry, your cv is too large.";
             $uploadOk = 0;
         }

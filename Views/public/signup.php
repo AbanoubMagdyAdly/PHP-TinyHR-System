@@ -6,7 +6,7 @@ if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]
 	$db->connect();
 	$upload = new Upload($_POST["uname"]);
 	if ($db->is_exist($_POST["uname"])) {
-		$upload->errors["form"]="name alredy exist!! ";
+		$upload->errors["form"] = "name alredy exist!! ";
 	} else {
 		// echo "welcome";
 		$email_check = $upload->Check_email();
@@ -18,17 +18,15 @@ if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]
 			$upload->Upload_cv();
 			$password = hash("sha256", $_POST["password"]);
 			$db->connect();
-			$db->insert_user_date($_POST["uname"],$password,$_POST["email"],$_POST["job"]);
+			$db->insert_user_date($_POST["fullname"], $_POST["uname"], $password, $_POST["email"], $_POST["job"]);
 		}
 	}
 } else {
-	$upload->errors["form"]= "Please complete the form !!";
+	$upload->errors["form"] = "Please complete the form !!";
 }
-if(isset($upload->errors)&&empty($upload->errors)){
-	echo "Welcome";
-	header('Refresh: 2; URL=/tinyhr');
+if (isset($upload->errors) && empty($upload->errors)) {
+	header('Refresh: 0; URL=');
 }
-var_dump($_FILES["cv"]);
 
 $password = isset($_POST['password']) ? $_POST['password'] : "";
 $uname    = isset($_POST['uname'])    ? $_POST['uname']    : "";
@@ -38,18 +36,20 @@ $job 	  = isset($_POST['job'])      ? $_POST['job']      : "";
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<title>SignUp</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->
-	<link rel="icon" type="image/png" href="views/public/images/icons/favicon.ico"/>
-<!--===============================================================================================-->
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="views/public/css/util.css">
-	<link rel="stylesheet" type="text/css" href="views/public/css/main.css">
-<!--===============================================================================================-->
+    <title>SignUp</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" href="views/public/images/icons/favicon.ico" />
+    <!--===============================================================================================-->
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="views/public/css/util.css">
+    <link rel="stylesheet" type="text/css" href="views/public/css/main.css">
+    <!--===============================================================================================-->
 </head>
+
 <body>
 
 
@@ -60,6 +60,12 @@ $job 	  = isset($_POST['job'])      ? $_POST['job']      : "";
 					Enter Your Data!
 				</span>
 
+				<div class="wrap-input100 validate-input" data-validate="fullname is required">
+                    <span class="label-input100">User full name</span>
+                    <input class="input100" type="text" name="fullname" placeholder="Enter your Full Name">
+                    <span class="focus-input100"></span>
+                </div>
+				
 				<div class="wrap-input100 validate-input" data-validate="UserName is required">
 					<span class="label-input100">User Name</span>
 					<input class="input100" type="text" name="uname" placeholder="Enter your User Name" value="<?php echo $uname ?>" >
@@ -152,4 +158,5 @@ $job 	  = isset($_POST['job'])      ? $_POST['job']      : "";
 </script>
 
 </body>
+
 </html>

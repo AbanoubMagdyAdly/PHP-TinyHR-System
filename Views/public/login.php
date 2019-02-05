@@ -1,25 +1,25 @@
 <?php 
 if (isset($_POST["username"]) && isset($_POST["password"])) {
 
-	if (!empty($_POST["password"]) && !empty($_POST["username"])) {
-		$GDB = new UsersDB(__TABLE_NAME__);
+    if (!empty($_POST["password"]) && !empty($_POST["username"])) {
+        $GDB = new UsersDB(__TABLE_NAME__);
 
-		if ($GDB->connect()) {
-			$password = hash("sha256", $_POST["password"]);
-			$user_record = $GDB->get_record_by_name_pass($_POST["username"], $password); // this is an array of arrays
-			if (isset($user_record) && !empty($user_record)) {
-				$user_record = $user_record[0];
-				$_SESSION["user_id"] = $user_record["id"];
-				$_SESSION["is_admin"] = $user_record["isadmin"];
-				header("Refresh:0");
-				die();
-			} else {
-				$error = "Either user name or password is wrong";
-			}
-		}
-	} else {
-		$error = "Either user name or password is wrong";
-	}
+        if ($GDB->connect()) {
+            $password = hash("sha256", $_POST["password"]);
+            $user_record = $GDB->get_record_by_name_pass($_POST["username"], $password); // this is an array of arrays
+            if (isset($user_record) && !empty($user_record)) {
+                $user_record = $user_record[0];
+                $_SESSION["user_id"] = $user_record["id"];
+                $_SESSION["is_admin"] = $user_record["isadmin"];
+                header("Refresh:0");
+                die();
+            } else {
+                $error = "Either user name or password is wrong";
+            }
+        }
+    } else {
+        $error = "Either user name or password is wrong";
+    }
 }
 ?>
 
@@ -61,8 +61,8 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
                     <div class="m-b-40">
                         <p class="error">
                             <?php if (isset($error)) {
-							echo "*" . $error;
-						} ?>
+                                echo "*" . $error;
+                            } ?>
                         </p>
                     </div>
                     <div class="container-login100-form-btn">

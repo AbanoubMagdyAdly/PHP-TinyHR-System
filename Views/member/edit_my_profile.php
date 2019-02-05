@@ -1,122 +1,151 @@
+<?php $db = new UsersDB(__TABLE_NAME__);
+$db->connect();
+$res = $db->get_record_by_id($_SESSION["user_id"]);
+?>
+<?php 
+$errors = array();
+if (isset($_POST["fullname"]) && isset($_POST["email"]))
+	if (!empty($_POST["fullname"]) && !empty($_POST["email"])) {
+	$db = new UsersDB("users");
+	$db->connect();
+	$upload = new Upload($res[0]["username"]);
+
+	if (isset($_Files['cv']['name']) && isset($_Files['photo']['name'])) {
+		if (!empty($_Files['cv']['name']) && !empty($_Files['photo']['name'])) {
+			$cv_check = $upload->Check_cv();
+			$photo_check = $upload->Check_photo();
+			if ($cv_check && $photo_check) {
+				$upload->Upload_photo();
+				$upload->Upload_cv();
+			}
+		}
+	}
+	$db->connect();
+	$db->update_user_date($_POST["fullname"], $_POST["email"], $_POST["job"]);
+
+
+} else {
+	$upload->errors["form"] = "Please complete the form !!";
+}
+if (isset($upload->errors) && empty($upload->errors)) {
+	header('Refresh: 0; URL=');
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<title>Edit Your Profile</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->
-	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="css/util.css">
-	<link rel="stylesheet" type="text/css" href="css/main.css">
-<!--===============================================================================================-->
+    <title>Edit Profile</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" href="views/public/images/icons/favicon.ico" />
+    <!--===============================================================================================-->
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="views/public/css/util.css">
+    <link rel="stylesheet" type="text/css" href="views/public/css/main.css">
+    <!--===============================================================================================-->
 </head>
+
 <body>
 
 
-	<div class="container-contact100">
-		<div class="wrap-contact100">
-			<form class="contact100-form validate-form" enctype="multipart/form-data" method ="post">
-				<span class="contact100-form-title">
-					Edit Your Data!
-				</span>
+    <div class="container-contact100">
+        <div class="wrap-contact100">
+            <form class="contact100-form validate-form" enctype="multipart/form-data" method="post">
+                <span class="contact100-form-title">
+                    Edit Your Data!
+                </span>
 
-				<div class="wrap-input100 validate-input" data-validate="UserName is required">
-					<span class="label-input100">User Name</span>
-					<input class="input100" type="text" name="uname" placeholder="Enter your User Name">
-					<span class="focus-input100"></span>
-				</div>
+                <div class="wrap-input100 validate-input" data-validate="UserName is required">
+                    <span class="label-input100">User Name</span>
+                    <input class="input100" type="text" name="fullname" value="<?php echo $res[0]["fullname"] ?>">
+                    <span class="focus-input100"></span>
+                </div>
 
-				<div class="wrap-input100 validate-input" data-validate="Password is required">
-					<span class="label-input100">Password</span>
-					<input class="input100" type="password" name="password" placeholder="Enter your password">
-					<span class="focus-input100"></span>
-				</div>
+                <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+                    <span class="label-input100">Email</span>
+                    <input class="input100" type="text" name="email" value="<?php echo $res[0]["email"] ?>">
+                    <span class="focus-input100"></span>
+                </div>
 
-				<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
-					<span class="label-input100">Email</span>
-					<input class="input100" type="text" name="email" placeholder="Enter your email addess">
-					<span class="focus-input100"></span>
-				</div>
+                <div class="wrap-input100 validate-input" data-validate="Job is required">
+                    <span class="label-input100">User job</span>
+                    <input class="input100" type="text" name="job" value="<?php echo $res[0]["job"] ?>">
+                    <span class="focus-input100"></span>
+                </div>
 
-				<div class="wrap-input100 validate-input">
-					<span class="label-input100">Upload CV : </span>
-					<input class="input100" type="file" name="cv">
-					<span class="focus-input100"></span>
-				</div>
+                <div class="wrap-input100 validate-input">
+                    <span class="label-input100">Upload CV : </span>
+                    <input class="input100" type="file" name="cv">
+                    <span class="focus-input100"></span>
+                    <p class="error">
+                        <?php if (isset($upload->errors["cv"])) {
+																								echo "*" . $upload->errors["cv"];
+																							} ?>
+                    </p>
+                </div>
 
-				<div class="wrap-input100 validate-input">
-					<span class="label-input100">Upload Your Photo : </span>
-					<input class="input100" type="file" name="Photo">
-					<span class="focus-input100"></span>
-				</div>
-
-
-				<div class="container-contact100-form-btn">
-					<div class="wrap-contact100-form-btn">
-						<div class="contact100-form-bgbtn"></div>
-						<button class="contact100-form-btn">
-							<span>
-								Submit
-								<i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
-							</span>
-						</button>
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
+                <div class="wrap-input100 validate-input">
+                    <span class="label-input100">Upload Your Photo : </span>
+                    <input class="input100" type="file" name="Photo">
+                    <span class="focus-input100"></span>
+                    <p class="error">
+                        <?php if (isset($upload->errors["photo"])) {
+																								echo "*" . $upload->errors["photo"];
+																							} ?>
+                    </p>
+                </div>
 
 
+                <div class="container-contact100-form-btn">
+                    <div class="wrap-contact100-form-btn">
+                        <div class="contact100-form-bgbtn"></div>
 
-	<div id="dropDownSelect1"></div>
+                        <button class="contact100-form-btn">
+                            <span>
+                                Submit
+                                <i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <p class="error">
+                    <?php if (isset($upload->errors["form"])) {
+																				echo "*" . $upload->errors["form"];
+																			} ?>
+                </p>
+            </form>
+        </div>
+    </div>
 
-<!--===============================================================================================-->
-	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/animsition/js/animsition.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/bootstrap/js/popper.js"></script>
-	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/select2/select2.min.js"></script>
-	<script>
-		$(".selection-2").select2({
-			minimumResultsForSearch: 20,
-			dropdownParent: $('#dropDownSelect1')
-		});
-	</script>
-<!--===============================================================================================-->
-	<script src="vendor/daterangepicker/moment.min.js"></script>
-	<script src="vendor/daterangepicker/daterangepicker.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/countdowntime/countdowntime.js"></script>
-<!--===============================================================================================-->
-	<script src="js/main.js"></script>
 
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'UA-23581568-13');
-</script>
+    <div id="dropDownSelect1"></div>
+
+    <!--===============================================================================================-->
+    <script>
+    $(".selection-2").select2({
+        minimumResultsForSearch: 20,
+        dropdownParent: $('#dropDownSelect1')
+    });
+    </script>
+    <!--===============================================================================================-->
+    <script src="views/public/js/main.js"></script>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-23581568-13');
+    </script>
 
 </body>
+
 </html>

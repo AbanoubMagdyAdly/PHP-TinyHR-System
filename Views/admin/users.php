@@ -60,7 +60,7 @@ $pg->handle_url_lower_limit();
 
 
         <?php if (isset($users_records) && !empty($users_records)) {
-        ?>
+            ?>
         <table cellspacing="0">
             <tr>
                 <th>Picture</th>
