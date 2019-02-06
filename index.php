@@ -18,13 +18,24 @@ if (isset($_SESSION["user_id"]) || isset($_COOKIE["user_id"])) {
         header("refresh:0");
     } elseif (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] == 1 || isset($_COOKIE["user_id"]) && $_COOKIE["is_admin"] == 1) {
         //admin views should be required here
+            require_once("views/admin/navbar_admin.php");
         if (isset($_GET["id"]) && !empty($_GET["id"])) {
             require_once("views/admin/user.php");
-        } else {
+        } elseif(isset($_GET["block"]) && !empty($_GET["block"])) {
+            require_once("views/admin/block.php");
+            
+        }else{
             require_once("views/admin/users.php");
         }
     } elseif (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] == 0 || isset($_COOKIE["user_id"]) && $_COOKIE["is_admin"] == 0) {
-        require_once("views/member/view_my_profile.php");
+        require_once("views/member/navbar_user.php");
+        if (isset($_GET["edit"]) && !empty($_GET["edit"])) {
+            require_once("views/member/edit_my_profile.php");
+        }
+        else
+        {
+            require_once("views/member/view_my_profile.php");
+        }
         //members views should be required here
     }
 } elseif (isset($_GET["signup"])) {

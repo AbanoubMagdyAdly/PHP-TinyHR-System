@@ -28,6 +28,7 @@ if (isset($upload->errors) && empty($upload->errors)) {
 	header('Refresh: 0; URL=');
 }
 
+$fullname = isset($_POST['fullname']) ? $_POST['fullname'] : "";
 $password = isset($_POST['password']) ? $_POST['password'] : "";
 $uname    = isset($_POST['uname'])    ? $_POST['uname']    : "";
 $email    = isset($_POST['email'])    ? $_POST['email']    : "";
@@ -62,7 +63,7 @@ $job 	  = isset($_POST['job'])      ? $_POST['job']      : "";
 
 				<div class="wrap-input100 validate-input" data-validate="fullname is required">
                     <span class="label-input100">User full name</span>
-                    <input class="input100" type="text" name="fullname" placeholder="Enter your Full Name">
+                    <input class="input100" type="text" name="fullname" placeholder="Enter your Full Name" value="<?php echo $fullname ?>">
                     <span class="focus-input100"></span>
                 </div>
 				

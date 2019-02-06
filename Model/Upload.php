@@ -20,7 +20,7 @@ class Upload
     public function Check_password()
     {
         $uploadOk = 1;
-        if(strlen($_POST["password"]) < 8 || strlen($_POST["password"]>16)){
+        if(strlen($_POST["password"]) < 8 || strlen($_POST["password"])>16){
             $this->errors["password"] = "password must be between 8 and 16 characters";
             $uploadOk = 0;
         }

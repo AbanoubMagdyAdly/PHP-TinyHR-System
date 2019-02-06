@@ -34,7 +34,6 @@ $pg->handle_url_lower_limit();
 </head>
 
 <body>
-    <a href="?logout"> <button>logout</button> </a>
     <div class="s003">
         <form>
             <div class="inner-form">

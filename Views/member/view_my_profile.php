@@ -17,14 +17,14 @@ $res = $db->get_record_by_id($_SESSION["user_id"]);
     <link href="views/admin/css/main.css" rel="stylesheet" />
     <link rel="stylesheet" href="views/admin/css/style.css">
     <link rel="stylesheet" href="views/admin/css/bootstrap.css">
-    <link rel="stylesheet" href="vendors/linericon/style.css">
+    <!-- <link rel="stylesheet" href="vendors/linericon/style.css"> -->
     <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="vendors/owl-carousel/owl.carousel.min.css">
+    <!-- <link rel="stylesheet" href="vendors/owl-carousel/owl.carousel.min.css">
     <link rel="stylesheet" href="vendors/lightbox/simpleLightbox.css">
     <link rel="stylesheet" href="vendors/nice-select/css/nice-select.css">
     <link rel="stylesheet" href="vendors/animate-css/animate.css">
     <link rel="stylesheet" href="vendors/popup/magnific-popup.css">
-    <link rel="stylesheet" href="vendors/flaticon/flaticon.css">
+    <link rel="stylesheet" href="vendors/flaticon/flaticon.css"> -->
     <!-- main css -->
     <link rel="stylesheet" href="views/admin/css/style1.css">
     <link rel="stylesheet" href="views/admin/css/responsive.css">
@@ -34,7 +34,6 @@ $res = $db->get_record_by_id($_SESSION["user_id"]);
 
 <body>
 
-    <a href="?logout"><button>logout</button></a>
     <!--================Home Banner Area =================-->
     <section class="home_banner_area">
         <div class="container box_1620">

@@ -3,7 +3,10 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 
     if (!empty($_POST["password"]) && !empty($_POST["username"])) {
         $GDB = new UsersDB(__TABLE_NAME__);
-
+        if(strlen($_POST["password"]) < 8 || strlen($_POST["password"])>16){
+            $errors [] = "password must be between 8 and 16 characters";
+        }
+        else{
         if ($GDB->connect()) {
             $password = hash("sha256", $_POST["password"]);
             $user_record = $GDB->get_record_by_name_pass($_POST["username"], $password); // this is an array of arrays
@@ -14,11 +17,12 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
                 header("Refresh:0");
                 die();
             } else {
-                $error = "Either user name or password is wrong";
+                $errors []= "Either user name or password is wrong";
             }
         }
-    } else {
-        $error = "Either user name or password is wrong";
+    }
+    }   else {
+        $errors[] = "Either user name or password is wrong";
     }
 }
 ?>
@@ -60,7 +64,8 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
                     </div>
                     <div class="m-b-40">
                         <p class="error">
-                            <?php if (isset($error)) {
+                            <?php if (isset($errors)) {
+                                foreach ($errors as $error)
                                 echo "*" . $error;
                             } ?>
                         </p>

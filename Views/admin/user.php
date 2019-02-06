@@ -34,7 +34,6 @@ $res = $db->get_record_by_id($_GET["id"]);
 
 <body>
 
-    <a href="?logout"><button>logout</button></a>
     <!--================Home Banner Area =================-->
     <section class="home_banner_area">
         <div class="container box_1620">
