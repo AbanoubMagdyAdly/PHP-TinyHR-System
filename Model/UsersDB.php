@@ -78,7 +78,6 @@ class UsersDB
             }
             return $_arr_results;
         } else {
-            $this->disconnect();
             return false;
         }
     }
@@ -109,7 +108,6 @@ class UsersDB
         $sql = "insert into $table (fullname ,username, password,email, job, hasphoto, hascv, isadmin) VALUES ('$fullname','$username', '$password','$email','$job', '1', '1', '0');";
         mysqli_query($this->_db_handler, $sql);
         echo mysqli_error($this->_db_handler);
-        $this->disconnect();
     }
 
     public function update_user_date($username, $email, $job)
@@ -119,7 +117,27 @@ class UsersDB
         $sql = "update $table SET fullname = '$username' , email = '$email' , job = '$job'  WHERE id ='$id';";
         mysqli_query($this->_db_handler, $sql);
         echo mysqli_error($this->_db_handler);
-        $this->disconnect();
+    }
+
+    public function get_record_by_name($value)
+    {
+        $sql = "select * from users where username = '$value';";
+
+        return $this->get_results($sql);
+    }
+
+    public function update_user_logincount($user_record)
+    {
+        $login_failed_attempts = $user_record["login_failed_attempts"];
+        $last_login_timestamp = $user_record["last_login_timestamp"];
+        $is_blocked = $user_record["is_blocked"];
+        $id = $user_record["id"];
+
+        $table = $this->_table;
+        $sql = "update $table SET login_failed_attempts = '$login_failed_attempts' , last_login_timestamp = $last_login_timestamp , is_blocked = '$is_blocked'  WHERE id ='$id';";
+        //echo $sql ."<br>";
+        mysqli_query($this->_db_handler, $sql);
+        echo mysqli_error($this->_db_handler);
     }
 
 /*     public function get_results_parametrized($sql, $value){

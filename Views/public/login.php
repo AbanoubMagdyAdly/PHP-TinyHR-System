@@ -1,28 +1,61 @@
 <?php 
 if (isset($_POST["username"]) && isset($_POST["password"])) {
-
     if (!empty($_POST["password"]) && !empty($_POST["username"])) {
+
         $GDB = new UsersDB(__TABLE_NAME__);
-        if(strlen($_POST["password"]) < 8 || strlen($_POST["password"])>16){
-            $errors [] = "password must be between 8 and 16 characters";
-        }
-        else{
+
         if ($GDB->connect()) {
             $password = hash("sha256", $_POST["password"]);
-            $user_record = $GDB->get_record_by_name_pass($_POST["username"], $password); // this is an array of arrays
-            if (isset($user_record) && !empty($user_record)) {
-                $user_record = $user_record[0];
-                $_SESSION["user_id"] = $user_record["id"];
-                $_SESSION["is_admin"] = $user_record["isadmin"];
-                header("Refresh:0");
-                die();
-            } else {
-                $errors []= "Either user name or password is wrong";
+            $user_record = $GDB->get_record_by_name($_POST["username"])[0];
+            
+            // wrong password
+            if($user_record["username"] == $_POST["username"] && $password != $user_record["password"] && !$user_record["is_blocked"] ){
+                if( time() - $user_record["last_login_timestamp"] < __FAILED_LOGIN_TIME_SPAN_LIMIT){
+                    $user_record["login_failed_attempts"]++ ;
+                }
+                $user_record["last_login_timestamp"] = time();
+                $GDB->update_user_logincount($user_record);
+            }
+
+            if($password == $user_record["password"] && !$user_record["is_blocked"]){ // if matched and not blocked
+                $user_record = $GDB->get_record_by_name_pass($_POST["username"], $password); // this is an array of arrays
+                if (isset($user_record) && !empty($user_record)) {
+                    $user_record = $user_record[0];
+                    $_SESSION["user_id"] = $user_record["id"];
+                    $_SESSION["is_admin"] = $user_record["isadmin"];
+    
+                    $user_record["login_failed_attempts"]=0;
+                    $GDB->update_user_logincount($user_record);
+    
+                    header('Refresh: 0; URL=');
+                    die();
+                } else {
+                    $error = "Either user name or password is wrong";
+                }
+            } else { // check block
+                if($user_record["login_failed_attempts"] >= __FAILED_LOGIN_ATTEMPTS_LIMIT && !$user_record["is_blocked"] &&  time() - $user_record["last_login_timestamp"] <__FAILED_LOGIN_TIME_SPAN_LIMIT ){
+                    $user_record["is_blocked"] = 1;
+                    $user_record["last_login_timestamp"] = time();
+                    $GDB->update_user_logincount($user_record);
+                }
+                
+                if($user_record["is_blocked"] && (time() - $user_record["last_login_timestamp"] > __BLOCK_TIME)){
+                    $user_record["is_blocked"] = false;
+                    $user_record["login_failed_attempts"]=0;
+                    $GDB->update_user_logincount($user_record);
+                }
+                
+                if($user_record["is_blocked"]){
+                    echo "this account has exceeded the failed log in limit, please try again in:";
+                    echo date("i s",  __BLOCK_TIME-(time() - $user_record["last_login_timestamp"]));
+                    echo "s";
+                    die();
+                }
+                $GDB->update_user_logincount($user_record);
             }
         }
-    }
-    }   else {
-        $errors[] = "Either user name or password is wrong";
+    } else {
+        $error = "Either user name or password is wrong";
     }
 }
 ?>
@@ -62,10 +95,12 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
                         <input class="input100" type="password" name="password">
                         <span class="focus-input100" data-placeholder="Password"></span>
                     </div>
+                    <div class="wrap-input100 validate-input" data-validate="Enter password">
+                        <input class="input100" type="checkbox" name="rememberme">
+                    </div>
                     <div class="m-b-40">
                         <p class="error">
-                            <?php if (isset($errors)) {
-                                foreach ($errors as $error)
+                            <?php if (isset($error)) {
                                 echo "*" . $error;
                             } ?>
                         </p>
