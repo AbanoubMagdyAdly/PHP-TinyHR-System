@@ -25,7 +25,7 @@ if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]
 	$upload->errors["form"] = "Please complete the form !!";
 }
 if (isset($upload->errors) && empty($upload->errors)) {
-	header('Refresh: 0; URL=');
+	header('Refresh: 0; URL=?page=login');
 }
 
 $fullname = isset($_POST['fullname']) ? $_POST['fullname'] : "";

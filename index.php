@@ -5,6 +5,11 @@ define("_ALLOW_ACCESS", 1);
 ini_set('session.cookie_lifetime', 60 * 60 * 24 * 200);
 session_start();
 session_regenerate_id();
+$check=new check();
+if($check->check_block($_SERVER["REMOTE_ADDR"])){
+   require_once("views/public/403.php");
+   exit();
+}
 
 //********************************************//
 $user =new userpages();
