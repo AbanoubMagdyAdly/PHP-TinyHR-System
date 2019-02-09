@@ -59,7 +59,6 @@ class UsersDB
     public function get_record_by_name_pass($name, $password)
     {
         $sql = "select * from users where username = '$name' AND password = '$password';";
-
         return $this->get_results($sql);
     }
 
