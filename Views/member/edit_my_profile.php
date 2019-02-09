@@ -76,18 +76,18 @@ if (isset($upload->errors) && empty($upload->errors)) {
                     <span class="focus-input100"></span>
                 </div>
 
-                <div class="wrap-input100 validate-input">
+                <div class="wrap-input100t">
                     <span class="label-input100">Upload CV : </span>
                     <input class="input100" type="file" name="cv">
                     <span class="focus-input100"></span>
                     <p class="error">
                         <?php if (isset($upload->errors["cv"])) {
-																								echo "*" . $upload->errors["cv"];
-																							} ?>
+                            echo "*" . $upload->errors["cv"];
+                        } ?>
                     </p>
                 </div>
 
-                <div class="wrap-input100 validate-input">
+                <div class="wrap-input100">
                     <span class="label-input100">Upload Your Photo : </span>
                     <input class="input100" type="file" name="Photo">
                     <span class="focus-input100"></span>

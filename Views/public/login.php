@@ -100,7 +100,7 @@ if(!$error){
                                 Don’t have an account?
                             </span>
 
-                            <a href="?signup=1" class="txt2">
+                            <a href="?page=signup" class="txt2">
                                 Sign up
                             </a>
                         </li>
