@@ -92,7 +92,7 @@ class UsersDB
     public function search($value)
     {
         $table = $this->_table;
-        $sql = "select * from $table where isadmin =0 and username like '%" . $value . "%' OR email like '%" . $value . "%' OR job like '%" . $value . "%'"; //OR email like '%".$value."%' OR id =$value
+        $sql = "select * from $table where isadmin =0 and (username like '%" . $value . "%' OR email like '%" . $value . "%' OR job like '%" . $value . "%')"; //OR email like '%".$value."%' OR id =$value
         return $this->get_results($sql);
     }
 
@@ -134,7 +134,7 @@ class UsersDB
             $_arr_results = array();
             if($result_handler){                
                 while($row = mysqli_fetch_assoc($result_handler)){
-                    $_arr_results[] = array_change_key_case($row);
+                    $_arr_results[] = .//array_change_key_case($row);
                 }
                 return $_arr_results;
             } else {

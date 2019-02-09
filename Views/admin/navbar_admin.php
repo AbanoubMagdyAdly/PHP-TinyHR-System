@@ -8,15 +8,15 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="?">Users
+            <a class="nav-link" href="?page=users">Users
               <span class="sr-only">(current)</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="?block=1">Block</a>
+            <a class="nav-link" href="?page=block">Block</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="?logout">Logout</a>
+            <a class="nav-link" href="?page=logout">Logout</a>
           </li>
         </ul>
       </div>

@@ -1,20 +1,19 @@
 <?php
 $DB = new UsersDB(__TABLE_NAME__);
 
-$current_page = isset($_GET["page"]) && is_numeric($_GET["page"]) ? $_GET["page"] : 0;
+$current_page = isset($_GET["currentpage"]) && is_numeric($_GET["currentpage"]) ? $_GET["currentpage"] : 0;
 
 if ($DB->connect()) {
     $users_records = $DB->get_users(["username", "id", "email", "job", "hasphoto", "hascv"], $current_page * __RECORDS_PER_PAGE__); // this is an array of arrays
     $members_count = (array_values(($DB->get_members_count())[0]))[0];
+    $pg = new Pagination($current_page, $members_count);
+    $pg->handle_url_upper_limit();
+    $pg->handle_url_lower_limit();
+    if (isset($_GET["search"])) {
+        $users_records = $DB->search($_GET["search"]);
+    }
 }
 
-if (isset($_GET["search"])) {
-    $users_records = $DB->search($_GET["search"]);
-}
-
-$pg = new Pagination($current_page, $members_count);
-$pg->handle_url_upper_limit();
-$pg->handle_url_lower_limit();
 ?>
 
 <!DOCTYPE html>
@@ -77,15 +76,15 @@ $pg->handle_url_lower_limit();
                 echo "<td>" . $user_record["username"] . "</td>";
                 echo "<td>" . $user_record["email"] . "</td>";
                 echo "<td>" . $user_record["job"] . "</td>";
-                echo "<td><a href=" . $_SERVER['PHP_SELF'] . "?id=" . $user_record['id'] . ">view more</a></td>";
+                echo "<td><a href=" . $_SERVER['PHP_SELF'] . "?page=profile&&id=" . $user_record['id'] . ">view more</a></td>";
                 echo "</tr>";
             }
 
             if (isset($_GET["search"])) {
-                echo "<a href=" . $_SERVER['PHP_SELF'] . "> show all </a>";
+                echo "<a style='color:yellow;' href=" . $_SERVER['PHP_SELF'] . "> show all </a>";
             } else {
-                echo "<a href=" . $_SERVER['PHP_SELF'] . "?page=" . $pg->nextPage() . "> next </a>";
-                echo "<a href=" . $_SERVER['PHP_SELF'] . "?page=" . $pg->prevPage() . "> previous </a>";
+                echo "<a style='color:yellow;' href=" . $_SERVER['PHP_SELF'] . "?currentpage=" . $pg->nextPage() . "> next </a>";
+                echo "<a style='color:yellow;' href=" . $_SERVER['PHP_SELF'] . "?currentpage=" . $pg->prevPage() . "> previous </a>";
             }
 
             ?>
@@ -93,7 +92,9 @@ $pg->handle_url_lower_limit();
 
         <?php 
     } else {
-        echo 'no users are found found';
+        echo "<center><a style='color:yellow;' href=" . $_SERVER['PHP_SELF'] . "> show all </a></center>";
+        echo "<br>";
+        echo 'no users are found';
     }
     ?>
     </div>
