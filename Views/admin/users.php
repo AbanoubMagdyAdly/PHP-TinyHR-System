@@ -4,7 +4,7 @@ $DB = new UsersDB(__TABLE_NAME__);
 $current_page = isset($_GET["currentpage"]) && is_numeric($_GET["currentpage"]) ? $_GET["currentpage"] : 0;
 
 if ($DB->connect()) {
-    $users_records = $DB->get_users(["username", "id", "email", "job", "hasphoto", "hascv"], $current_page * __RECORDS_PER_PAGE__); // this is an array of arrays
+    $users_records = $DB->get_users([], $current_page * __RECORDS_PER_PAGE__); // this is an array of arrays
     $members_count = (array_values(($DB->get_members_count())[0]))[0];
     $pg = new Pagination($current_page, $members_count);
     $pg->handle_url_upper_limit();
@@ -65,11 +65,17 @@ if ($DB->connect()) {
                 <th>Name</th>
                 <th>Email</th>
                 <th>Job</th>
-                <th width="230">Comments</th>
+                <th width="150"><center>Comments</center></th>
+                <th width="150">last active</th>
             </tr>
 
             <?php
             foreach ($users_records as $user_record) {
+                if(time() - $user_record["last_login_timestamp"] < __LAST_ACTIVE)
+                    $last_active = date("i s", time() - $user_record["last_login_timestamp"]). "s ago";
+                else
+                    $last_active = "offline";
+
                 $image_src = $user_record["hasphoto"] == 1 ? "Files/Photos/" . $user_record["username"] : "Assets/default_avatar";
                 echo "<tr>";
                 echo "<td> <img src=$image_src" . ".jpg >" . "</td>";
@@ -77,7 +83,9 @@ if ($DB->connect()) {
                 echo "<td>" . $user_record["email"] . "</td>";
                 echo "<td>" . $user_record["job"] . "</td>";
                 echo "<td><a href=" . $_SERVER['PHP_SELF'] . "?page=profile&&id=" . $user_record['id'] . ">view more</a></td>";
+                echo "<td>" . $last_active. "</td>";
                 echo "</tr>";
+
             }
 
             if (isset($_GET["search"])) {

@@ -44,6 +44,7 @@ class Login {
 
     public function reset_login_atttempts(){
         $this->user_record["login_failed_attempts"]=0;
+        $this->user_record["last_login_timestamp"]= time();
     }
 
     public function check_fields_criteria(){
