@@ -78,10 +78,16 @@ class Login {
         }
     }
 
-    public function authenticate()
+    public function authenticate($rememberme)
     {
         $_SESSION["user_id"] = $this->user_record["id"];
         $_SESSION["is_admin"] = $this->user_record["isadmin"];
+
+        if($rememberme){
+            $token  = $this->user_record["id"] .",".  $this->user_record["isadmin"];
+            $token = Crypto::encrypt($token, __SALT);
+            setcookie("token",$token,time()+60*60*24*31,'/');
+        }
 
         $this->user_record["login_failed_attempts"]=0;
         $this->reset_login_atttempts();
