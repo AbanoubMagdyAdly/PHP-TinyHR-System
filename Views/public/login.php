@@ -1,5 +1,5 @@
 <?php 
-
+    
 if (isset($_POST["username"]) && isset($_POST["password"])) {
 $login = new Login();
 $error = $login->check_fields_criteria();
@@ -15,7 +15,7 @@ if(!$error){
         $user_record = empty($user_record) ? $user_record: $user_record[0];
         $error       = $login->check_is_found($user_record);
 
-        if(!$error){
+        if(empty($error)){
 
             $login->put_db_recored($user_record);
 
@@ -26,7 +26,8 @@ if(!$error){
             }
 
             if($password == $user_record["password"] && !$user_record["is_blocked"]){ // if matched and not blocked
-                $login->authenticate();
+                $rememberme = isset($_POST["rememberme"]) ? true:false;
+                $login->authenticate($rememberme);
                 $UDB->update_user_logincount($login->get_user());
                 header('Refresh: 0; URL=');
                 die();
@@ -77,9 +78,14 @@ if(!$error){
                         <input class="input100" type="password" name="password">
                         <span class="focus-input100" data-placeholder="Password"></span>
                     </div>
-                    <div class="wrap-input100 validate-input" data-validate="Enter password">
-                        <input class="input100" type="checkbox" name="rememberme">
-                    </div>
+                    <br>
+                    <center>
+                        <div class="validate-input" data-validate="Enter password">
+                            remember me
+                            <input class="input"  type="checkbox" name="rememberme" value="1">
+                        </div>
+                    </center>
+
                     <div class="m-b-40">
                         <p class="error">
                             <?php if (isset($error) && !empty($error)) {

@@ -2,9 +2,19 @@
 
 require_once("autoload.php");
 define("_ALLOW_ACCESS", 1);
-ini_set('session.cookie_lifetime', 60 * 60 * 24 * 200);
 session_start();
 session_regenerate_id();
+
+if(isset($_COOKIE["token"])){
+   $data = Crypto::decrypt($_COOKIE["token"],__SALT);
+   $data = explode(",",$data);
+   if(is_numeric($data[0])){
+      $_SESSION["user_id"]  = $data[0];
+      $_SESSION["is_admin"] = $data[1];
+   } else {
+      setcookie("token","",time()-3600);
+   };
+}
 
 //********************************************//
 $user =new userpages();
@@ -23,5 +33,3 @@ if(isset($_GET["page"])&& in_array($_GET["page"],array_keys($router_array))) {
 }
 else
    $router_array[""]($user);
-
-// $router_array["login"]($user);

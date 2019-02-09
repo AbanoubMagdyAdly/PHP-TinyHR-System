@@ -102,6 +102,7 @@ class userpages{
     }
     public function logout(){
         setcookie('PHPSESSID', '', time() - 3600, '/');
+        setcookie("token","",time() - 3600,'/');
         session_destroy();
         header("refresh:0; URL=?");
     }
