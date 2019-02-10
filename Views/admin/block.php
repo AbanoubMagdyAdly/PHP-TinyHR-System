@@ -1,5 +1,5 @@
 <?php
-
+defined('_ALLOW_ACCESS')or die("Not Allowed");
 function block($ip)
 {
   $blockdb=new BlockDB("blockips");

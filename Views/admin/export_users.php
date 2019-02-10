@@ -1,5 +1,5 @@
 <?PHP
-
+defined('_ALLOW_ACCESS')or die("Not Allowed");
   // Original PHP code by Chirp Internet: www.chirp.com.au
   // Please acknowledge use of this code by including this header.
     $db = new UsersDB("users");

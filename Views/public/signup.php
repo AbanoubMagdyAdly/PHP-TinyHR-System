@@ -1,4 +1,5 @@
 <?php 
+defined('_ALLOW_ACCESS')or die("Not Allowed");
 $errors = array();
 if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]) && isset($_FILES["cv"]["name"]) && isset($_FILES["Photo"]["name"]))
 	if (!empty($_POST["uname"]) && !empty($_POST["password"]) && !empty($_POST["email"]) && !empty($_FILES["cv"]["name"]) && !empty($_FILES["Photo"]["name"])) {
