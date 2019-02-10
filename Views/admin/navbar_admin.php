@@ -16,6 +16,9 @@
             <a class="nav-link" href="?page=block">Block</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="?page=export">ExportUsers</a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="?page=logout">Logout</a>
           </li>
         </ul>

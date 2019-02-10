@@ -61,6 +61,22 @@ class userpages{
         $this->login();
     }
 }
+public function export(){
+    if (isset($_SESSION["user_id"])){
+        if (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] == 1){
+            require_once("views/admin/export_users.php");
+            require_once("views/admin/navbar_admin.php");
+            require_once("views/admin/users.php");
+        }
+        else{
+            require_once("views/member/navbar_user.php");
+            require_once("views/public/403.php");
+        }
+    }
+    else{
+        $this->login();
+    }
+}
     public function user_profile(){
         if (isset($_SESSION["user_id"])){
             if (isset($_SESSION["is_admin"]) && $_SESSION["is_admin"] == 0){
