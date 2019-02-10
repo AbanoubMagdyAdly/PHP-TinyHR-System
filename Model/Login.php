@@ -2,20 +2,22 @@
 class Login {
 
     private $user_record;
+    private $db;
+    private $input_hash_pass;
+    public $error;
 
-    public function put_db_recored($user_record)
+    public function set_db_record($db, $user_record, $password)
     {
-        $this->user_record = $user_record;
-        
+        $this->input_hash_pass = hash("sha256", $password);
+        $this->db          = $db;
+        $this->user_record = $this->db-> get_record_by_name($user_record); // this is an array of arrays
+        $this->user_record = empty($this->user_record) ? $this->user_record: $this->user_record[0];
+        $this->error       = empty($this->user_record) ? "Either user name or password is wrong": "";
     }
 
-    public function get_user(){
-        return $this->user_record;
-    }
-
-    public function is_login_failed($name, $password){
+    public function is_login_failed($name){
         if($this->user_record["username"] == $name)
-        if($this->user_record["password"] != $password && !$this->user_record["is_blocked"])
+        if($this->user_record["password"] != $this->input_hash_pass  && !$this->user_record["is_blocked"])
             return true;
         
         return false;
@@ -25,7 +27,9 @@ class Login {
         if( time() - $this->user_record["last_login_timestamp"] < __FAILED_LOGIN_TIME_SPAN_LIMIT)
             $this->user_record["login_failed_attempts"]++ ;
         
+        $this->db->update_user_logincount($this->user_record);
         $this->user_record["last_login_timestamp"] = time();
+        $this->error = "Either user name or password is wrong";
     }
 
     public function handle_failed_login(){
@@ -40,6 +44,8 @@ class Login {
             $this->user_record["is_blocked"] = false;
             $this->user_record["login_failed_attempts"]=0;
         }
+
+        $this->db->update_user_logincount($this->user_record);
     }
 
     public function reset_login_atttempts(){
@@ -47,26 +53,28 @@ class Login {
         $this->user_record["last_login_timestamp"]= time();
     }
 
-    public function check_fields_criteria(){
-        $error = "";
-        if (!empty($_POST["password"]) && !empty($_POST["username"])) {
-            if(strlen($_POST["password"]) < 8 || strlen($_POST["password"])>16){
-                $error = "password must be between 8 and 16 characters";
+    public function is_fields_valid($password, $username){
+        if (!empty($password) && !empty($username)) {
+            if(strlen($password) < 8 || strlen($password)>16){
+                $this->error = "password must be between 8 and 16 characters";
+                return false;
             }
         }
         else {
-            $error = "please enter both user name or password is wrong";
+            $this->error = "please enter both user name or password is wrong";
+            return false;
         }
-        return $error;
+        return true;
     }
 
-    public function check_is_found($user_record)
+    public function check_user_exists()
     {
-        if (isset($user_record) && !empty($user_record))
-            $error = "";
-        else
-            $error = "Either user name or password is wrong";
-        return $error;
+        if (isset($this->user_record) && !empty($this->user_record))
+            return true;
+        else {
+            $this->error = "Either user name or password is wrong";
+            return false;
+        }
     }
 
     public function show_block_timer()
@@ -79,6 +87,14 @@ class Login {
         }
     }
 
+    public function matched_and_not_blocked()
+    {
+        if($this->input_hash_pass == $this->user_record["password"] && !$this->user_record["is_blocked"])
+            return true;
+        else 
+            return false;
+            
+    }
     public function authenticate($rememberme)
     {
         $_SESSION["user_id"] = $this->user_record["id"];
@@ -90,8 +106,8 @@ class Login {
             setcookie("token",$token,time()+60*60*24*31,'/');
         }
 
-        $this->user_record["login_failed_attempts"]=0;
         $this->reset_login_atttempts();
+        $this->db->update_user_logincount($this->user_record);
     }
     
 }

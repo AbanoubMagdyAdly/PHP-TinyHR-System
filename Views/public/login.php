@@ -1,46 +1,32 @@
 <?php 
-    
 if (isset($_POST["username"]) && isset($_POST["password"])) {
-$login = new Login();
-$error = $login->check_fields_criteria();
+    $login = new Login();
 
-if(!$error){
+    if($login->is_fields_valid($_POST["password"],$_POST["username"])){
 
-    $UDB = new UsersDB(__TABLE_NAME__);
-    if (! $UDB->connect()) $error= "connection error";
-    else 
-    {
-        $password    = hash("sha256", $_POST["password"]);
-        $user_record = $UDB->get_record_by_name($_POST["username"]); // this is an array of arrays
-        $user_record = empty($user_record) ? $user_record: $user_record[0];
-        $error       = $login->check_is_found($user_record);
+        $UDB = new UsersDB(__TABLE_NAME__);
+        if (! $UDB->connect()) $error= "connection error";
+        else{
+            $login-> set_db_record($UDB,$_POST["username"],$_POST["password"]);
+            
+            if($login->check_user_exists()){
 
-        if(empty($error)){
+                if( $login->is_login_failed($_POST["username"]))
+                    $login->handle_failed_login_counter();
 
-            $login->put_db_recored($user_record);
-
-            if( $login->is_login_failed($_POST["username"], $password)){
-                $login->handle_failed_login_counter();
-                $UDB->update_user_logincount($login->get_user());
-                $error = "Either user name or password is wrong";
+                if($login->matched_and_not_blocked()){
+                    $rememberme = isset($_POST["rememberme"]) ? true: false;
+                    $login-> authenticate($rememberme);
+                    header('Refresh: 0; URL=');
+                    die();
+                } else { // check block
+                    $login-> handle_failed_login();
+                    $login-> show_block_timer();
+                }
             }
-
-            if($password == $user_record["password"] && !$user_record["is_blocked"]){ // if matched and not blocked
-                $rememberme = isset($_POST["rememberme"]) ? true:false;
-                $login->authenticate($rememberme);
-                $UDB->update_user_logincount($login->get_user());
-                header('Refresh: 0; URL=');
-                die();
-            } else { // check block
-                $login->handle_failed_login();
-                $UDB -> update_user_logincount($login->get_user());
-                $login-> show_block_timer();
-            }
-        }
-    }     
+        }     
+    }
 }
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -88,8 +74,8 @@ if(!$error){
 
                     <div class="m-b-40">
                         <p class="error">
-                            <?php if (isset($error) && !empty($error)) {
-                                echo "*" . $error;
+                            <?php if (isset($login->error) && !empty($login->error)) {
+                                echo "*" . $login->error;
                             } ?>
                         </p>
                     </div>
