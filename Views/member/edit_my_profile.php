@@ -1,4 +1,6 @@
-<?php $db = new UsersDB(__TABLE_NAME__);
+<?php 
+defined('_ALLOW_ACCESS')or die("Not Allowed");
+$db = new UsersDB(__TABLE_NAME__);
 $db->connect();
 $res = $db->get_record_by_id($_SESSION["user_id"]);
 ?>
@@ -13,7 +15,7 @@ if (isset($_POST["fullname"]) && isset($_POST["email"]))
 	if (isset($_Files['cv']['name']) && isset($_Files['photo']['name'])) {
 		if (!empty($_Files['cv']['name']) && !empty($_Files['photo']['name'])) {
 			$cv_check = $upload->Check_cv();
-			$photo_check = $upload->Check_photo();
+            $photo_check = $upload->Check_photo();
 			if ($cv_check && $photo_check) {
 				$upload->Upload_photo();
 				$upload->Upload_cv();

@@ -1,4 +1,6 @@
-<?php $db = new UsersDB(__TABLE_NAME__);
+<?php 
+defined('_ALLOW_ACCESS')or die("Not Allowed");
+$db = new UsersDB(__TABLE_NAME__);
 $db->connect();
 $res = $db->get_record_by_id($_GET["id"]);
 ?>

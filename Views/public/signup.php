@@ -1,4 +1,5 @@
 <?php 
+defined('_ALLOW_ACCESS')or die("Not Allowed");
 $errors = array();
 if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]) && isset($_FILES["cv"]["name"]) && isset($_FILES["Photo"]["name"]))
 	if (!empty($_POST["uname"]) && !empty($_POST["password"]) && !empty($_POST["email"]) && !empty($_FILES["cv"]["name"]) && !empty($_FILES["Photo"]["name"])) {
@@ -25,6 +26,14 @@ if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]
 	$upload->errors["form"] = "Please complete the form !!";
 }
 if (isset($upload->errors) && empty($upload->errors)) {
+	// $context = stream_context_create (array (
+	// 	'http' => array (
+	// 	'method' => 'POST',
+	// 	'username' => $_POST["uname"],
+	// 	'password'=> $_POST["password"]
+	// 	)
+	// 	));
+		// $result = file_get_contents('http://localhost/tinyhr/PHP-TinyHR-System/index.php?page=login', null, $context);
 	header('Refresh: 0; URL=?page=login');
 }
 

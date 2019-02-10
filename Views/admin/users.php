@@ -1,4 +1,5 @@
 <?php
+defined('_ALLOW_ACCESS')or die("Not Allowed");
 $DB = new UsersDB(__TABLE_NAME__);
 
 $current_page = isset($_GET["currentpage"]) && is_numeric($_GET["currentpage"]) ? $_GET["currentpage"] : 0;

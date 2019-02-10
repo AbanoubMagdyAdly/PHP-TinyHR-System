@@ -1,5 +1,4 @@
 <?php
-
 require_once("autoload.php");
 define("_ALLOW_ACCESS", 1);
 session_start();
@@ -21,7 +20,8 @@ $router_array = array( "login"        => function($user){$user->login();},
                        "signup"       => function($user){$user->signup() ;},
                        "userprofile"  => function($user){$user->user_profile();},
                        ""             => function($user){$user->main();} ,
-                       "block"        => function($user){$user->block();});
+                       "block"        => function($user){$user->block();},
+                       "export"       => function($user){$user->export();});
 
 if(isset($_GET["page"])&& in_array($_GET["page"],array_keys($router_array))) {
    $router_array[$_GET["page"]]($user);

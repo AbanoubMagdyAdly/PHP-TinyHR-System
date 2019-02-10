@@ -1,4 +1,5 @@
 <?php 
+defined('_ALLOW_ACCESS')or die("Not Allowed");
 if (isset($_POST["username"]) && isset($_POST["password"])) {
     $login = new Login();
 
