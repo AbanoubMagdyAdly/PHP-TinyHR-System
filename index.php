@@ -1,5 +1,4 @@
 <?php
-
 require_once("autoload.php");
 define("_ALLOW_ACCESS", 1);
 session_start();

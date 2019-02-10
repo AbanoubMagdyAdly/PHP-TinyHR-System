@@ -25,6 +25,14 @@ if (isset($_POST["uname"]) && isset($_POST["password"]) && isset($_POST["email"]
 	$upload->errors["form"] = "Please complete the form !!";
 }
 if (isset($upload->errors) && empty($upload->errors)) {
+	// $context = stream_context_create (array (
+	// 	'http' => array (
+	// 	'method' => 'POST',
+	// 	'username' => $_POST["uname"],
+	// 	'password'=> $_POST["password"]
+	// 	)
+	// 	));
+		// $result = file_get_contents('http://localhost/tinyhr/PHP-TinyHR-System/index.php?page=login', null, $context);
 	header('Refresh: 0; URL=?page=login');
 }
 
