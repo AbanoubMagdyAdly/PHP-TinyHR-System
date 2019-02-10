@@ -10,4 +10,5 @@
     define("__FAILED_LOGIN_ATTEMPTS_LIMIT", 5);
     define("__FAILED_LOGIN_TIME_SPAN_LIMIT", 60);
     define("__SALT", "fk32po,sdg;evdslbiprw4v");
+    define("__LAST_ACTIVE", 60*60);
 ?>

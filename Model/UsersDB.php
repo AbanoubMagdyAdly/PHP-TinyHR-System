@@ -32,7 +32,7 @@ class UsersDB
         $table = $this->_table;
 
         if (empty($fields)) {
-            $sql = "select * from $table";
+            $sql = "select * from $table where isadmin = 0";
         } else {
             $sql = "select";
             foreach ($fields as $f) {

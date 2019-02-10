@@ -32,7 +32,7 @@ class Pagination{
     public function handle_url_upper_limit(){
         if(isset($_GET["currentpage"]) && $_GET["currentpage"] > $this->upper_limit){
             $_GET["currentpage"] = $upper_limit;
-            $location = "$_SERVER[PHP_SELF]" . "?page=$this->upper_limit";
+            $location = "$_SERVER[PHP_SELF]" . "?currentpage=$this->upper_limit";
             header("location: $location");
         }
     }
@@ -40,7 +40,7 @@ class Pagination{
     public function handle_url_lower_limit(){
         if(isset($_GET["currentpage"]) && $_GET["currentpage"] < $this->lower_limit ){
             $_GET["currentpage"] = $lower_limit;
-            $location = "$_SERVER[PHP_SELF]" . "?page=$this->lower_limit";
+            $location = "$_SERVER[PHP_SELF]" . "?currentpage=$this->lower_limit";
             header("location: $location");
         }
     }
