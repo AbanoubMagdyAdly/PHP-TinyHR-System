@@ -27,6 +27,25 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
         }     
     }
 }
+
+if(isset($_POST['g-recaptcha-response']))
+    $captcha=$_POST['g-recaptcha-response'];
+else
+    $captcha = false;
+
+if(!$captcha){
+}
+else{
+    $secret = __CAPATCHA_SECRET_SS;
+    $url =  __GOOGLE_CAPATCHA . urlencode($secret) .  '&response=' . urlencode($captcha);
+    $response = file_get_contents($url);
+    $response = json_decode($response,true);
+    
+    if($response["success"]==false)
+    {
+    } else {
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -41,13 +60,16 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
     <link rel="stylesheet" type="text/css" href="views/public/css/main1.css">
     <!--===============================================================================================-->
 </head>
-
 <body>
 
+
+ <!-- <script src="https://www.google.com/recaptcha/api.js" async defer></script> -->
     <div class="limiter">
         <div class="container-login100">
             <div class="wrap-login100 p-t-0 p-b-0">
                 <form class="login100-form validate-form" method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
+                <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+                <input type="hidden" name="action" value="validate_captcha">
                     <span class="login100-form-title p-b-20">
                         Welcome
                     </span>
@@ -71,7 +93,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
                             <input class="input"  type="checkbox" name="rememberme" value="1">
                         </div>
                     </center>
-
+                    <div class="g-recaptcha" data-sitekey="6LcZa5AUAAAAAMBmXHytrMJpXKvYNPmpWAAZVVic"></div>
                     <div class="m-b-40">
                         <p class="error">
                             <?php if (isset($login->error) && !empty($login->error)) {
@@ -102,7 +124,27 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
         </div>
     </div>
     <div id="dropDownSelect1"></div>
-
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <!-- <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+        async defer>
+    </script> -->
+    <!-- <script src="https://www.google.com/recaptcha/api.js?render=6LcIZ5AUAAAAAEdA7fM9aD7AZ6kDmdfT0h3D7K_g"></script> -->
+    <script type="text/javascript">
+    var onloadCallback = function() {
+        alert("grecaptcha is ready!");
+    };
+   </script>
+   <!-- 
+    // grecaptcha.ready(function() {
+    // // do request for recaptcha token
+    // // response is promise with passed token
+    //     grecaptcha.execute('6LcIZ5AUAAAAAEdA7fM9aD7AZ6kDmdfT0h3D7K_g', {action:'validate_captcha'})
+    //               .then(function(token) {
+    //         console.log("asdsad")
+    //         document.getElementById('g-recaptcha-response').value = token;
+    //     });
+    // });
+    -->
 </body>
 
 </html>
